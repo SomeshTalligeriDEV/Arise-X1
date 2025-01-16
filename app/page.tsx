@@ -5,6 +5,7 @@ import { LoadingScreen } from "@/components/loading-screen"
 import { ArrowRight, Sparkles } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { SiteNav } from "@/components/site-nav"
+import { FeatureMarquee } from "@/components/feature-marquee"
 
 const STATS = [
   { value: "2.3s", label: "Avg AI response" },
@@ -47,6 +48,15 @@ export default function LandingPage() {
             <div className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">{stat.label}</div>
           </div>
         ))}
+      </section>
+      <section className="mx-auto max-w-6xl px-4 py-16 md:py-20">
+        <header className="mx-auto mb-8 flex max-w-2xl flex-col items-center gap-3 text-center">
+          <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-muted-foreground">What ARISE-X1 does</span>
+          <h2 className="text-balance text-2xl font-bold md:text-4xl">
+            Eight systems. <span className="text-primary">One operating system for health.</span>
+          </h2>
+        </header>
+        <FeatureMarquee />
       </section>
     </div>
   )
