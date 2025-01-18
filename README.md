@@ -48,3 +48,38 @@ Open [http://localhost:3000](http://localhost:3000).
 ---
 
 Built for the hackathon · Designed for the world
+
+## Screenshots
+
+| Dashboard | Quests | Explore |
+|-----------|--------|---------|
+| XP bar, mood selector, meal log | Daily & weekly challenges | Live walking map |
+
+| Leaderboard | Plans | Voice |
+|-------------|-------|-------|
+| Community rankings | Subscription tiers | Sarvam speech input |
+
+## Architecture
+
+```
+app/                  # Next.js App Router pages
+├── dashboard/        # Main health dashboard
+├── explore/          # Live walking map
+├── leaderboard/      # Community rankings
+├── plans/            # Meal subscription plans
+├── quests/           # Daily & weekly quests
+├── recommend/        # AI meal recommendations
+└── voice/            # Voice input interface
+
+components/           # Reusable React components
+├── ui/               # shadcn/ui primitives
+├── aria-coach.tsx    # Floating AI assistant
+├── xp-bar.tsx        # Level & XP progress
+└── ...
+
+lib/                  # Shared utilities & state
+├── types.ts          # TypeScript domain types
+├── mock-data.ts      # Development fixtures
+├── user-stats-context.tsx  # Global state
+└── xp.ts             # XP math helpers
+```
