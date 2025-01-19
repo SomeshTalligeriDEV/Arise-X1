@@ -1,4 +1,6 @@
 "use client"
+// Context signals fed to ARIA: time of day, mood, hours since last meal,
+// current page, streak status. These shape the nudge copy shown to the user.
 
 /**
  * ARIA Coach — floating glass chat widget that lives globally.
