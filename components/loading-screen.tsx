@@ -1,4 +1,6 @@
 "use client"
+// Boot sequence: animates through phases before calling onReady()
+// Phase 1 → system init, Phase 2 → ARIA boot, Phase 3 → ready
 
 import { useEffect, useRef, useState } from "react"
 import { Zap } from "lucide-react"
