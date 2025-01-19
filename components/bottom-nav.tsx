@@ -1,4 +1,5 @@
 "use client"
+// a11y: each nav link has an aria-label for screen readers
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
