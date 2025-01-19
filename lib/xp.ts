@@ -3,6 +3,7 @@
  * Curve: each level requires ~20% more XP than the previous one.
  */
 
+/** Calculate XP needed for the next level. */
 export function xpForLevel(level: number): number {
   if (level <= 1) return 0
   return Math.floor(50 * Math.pow(1.2, level - 1))
