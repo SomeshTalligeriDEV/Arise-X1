@@ -93,7 +93,10 @@ export interface BehaviorInsight {
   severity: "info" | "warn" | "good"
 }
 
-/* ---------- New: Quests (assigned tasks → claim XP) ---------- */
+/* ---------- Quests: assigned tasks the user completes to earn XP ----------
+ * Quests have a status lifecycle: active → ready (progress met) → claimed.
+ * The actionLabel is shown on the CTA button, e.g. "Log meal" or "Drink water".
+ * -------------------------------------------------------------------- */
 export type QuestCategory = "nutrition" | "movement" | "hydration" | "mindfulness"
 export type QuestDifficulty = "easy" | "medium" | "hard"
 export type QuestStatus = "active" | "ready" | "claimed"
