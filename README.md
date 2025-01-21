@@ -1,5 +1,10 @@
 # ARISE-X1
 
+![Next.js](https://img.shields.io/badge/Next.js-16-black?logo=next.js)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.7-blue?logo=typescript)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind-v4-38bdf8?logo=tailwindcss)
+![License](https://img.shields.io/badge/license-MIT-green)
+
 > Your health. Gamified. Evolved.
 
 ARISE-X1 is an AI-powered food & health tracker built with Next.js 16. Earn XP, track macros, complete daily quests, and battle unhealthy choices — your behavioral health OS, gamified.
