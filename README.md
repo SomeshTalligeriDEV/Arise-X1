@@ -52,7 +52,7 @@ Open [http://localhost:3000](http://localhost:3000).
 
 ---
 
-Built for the hackathon · Designed for the world
+Built for the hackathon. Designed for the world.
 
 ## Screenshots
 
