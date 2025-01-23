@@ -88,3 +88,16 @@ lib/                  # Shared utilities & state
 ├── user-stats-context.tsx  # Global state
 └── xp.ts             # XP math helpers
 ```
+
+## Code Quality
+
+```bash
+# Lint
+pnpm lint
+
+# Format
+pnpm prettier --write .
+
+# Type check
+pnpm tsc --noEmit
+```
