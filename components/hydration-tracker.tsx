@@ -1,4 +1,7 @@
 "use client"
+// Each glass icon represents one 250ml serving.
+// The fill animation uses a CSS clip-path transition driven by the
+// glasses/target ratio from UserStatsContext.
 
 import { useState } from "react"
 import { Droplets } from "lucide-react"
