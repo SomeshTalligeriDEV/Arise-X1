@@ -1,4 +1,7 @@
 "use client"
+// Map renders walk spots as interactive pins on a CSS grid canvas.
+// Coordinates are stored as percentages (0-100) of the container size
+// so the layout is fully responsive without a mapping library dependency.
 
 import { useMemo } from "react"
 import {
