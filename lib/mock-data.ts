@@ -1,3 +1,8 @@
+// Mock data for ARISE-X1 development.
+// Shapes mirror the planned Firestore collections:
+//   /users/{uid}, /meals/{id}, /quests/{id}, /walkSpots/{id}, /leaderboard/{uid}
+// Replace these exports with Firestore SDK calls in v0.2.
+
 /**
  * Hand-authored mock data for the demo build.
  * In production these read from Firestore + the Groq RAG pipeline.
