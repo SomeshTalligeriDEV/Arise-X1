@@ -23,3 +23,9 @@ All notable changes to ARISE-X1 are documented here.
 - Added DESIGN_SYSTEM.md with colour tokens and typography
 - Added GAMIFICATION.md with XP, leveling and quest design
 - Added CONTRIBUTING.md with setup and commit style guide
+
+### Infrastructure
+- Added GitHub Actions CI with lint, type-check and build
+- Added Vercel deployment config
+- Added issue templates and PR template
+- Added Prettier config with Tailwind class sorting
