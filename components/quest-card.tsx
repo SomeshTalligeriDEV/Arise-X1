@@ -1,4 +1,7 @@
 "use client"
+// Status flow: active → ready (progress === target) → claimed
+// The claim button is only enabled in "ready" state.
+// Claiming calls addXp() and addCoins() from UserStatsContext.
 
 import { Coins, Salad, Footprints, Droplets, Brain, Sparkles, Check } from "lucide-react"
 import type { LucideIcon } from "lucide-react"
