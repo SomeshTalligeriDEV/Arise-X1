@@ -101,3 +101,12 @@ pnpm prettier --write .
 # Type check
 pnpm tsc --noEmit
 ```
+
+## Documentation
+
+- [Architecture](docs/ARCHITECTURE.md)
+- [Design System](docs/DESIGN_SYSTEM.md)
+- [Gamification](docs/GAMIFICATION.md)
+- [API Reference](docs/API.md)
+- [Roadmap](docs/ROADMAP.md)
+- [Contributing Components](docs/CONTRIBUTING_COMPONENTS.md)
