@@ -1,12 +1,134 @@
 /**
- * Core type definitions for ARISE-X1.
- * Shapes mirror the eventual Firestore schema described in the product brief.
+ * Core type definitions for ARISE Food Delivery
+ * AI-powered food delivery with gamification
  */
 
+export type Mood = "energized" | "stressed" | "tired" | "happy" | "neutral" | "hungry" | "adventurous"
+export type MealType = "breakfast" | "lunch" | "dinner" | "snack" | "late_night"
+export type OrderStatus = "pending" | "confirmed" | "preparing" | "out_for_delivery" | "delivered" | "cancelled"
+
+export interface Profile {
+  id: string
+  full_name: string | null
+  avatar_url: string | null
+  phone: string | null
+  default_address: string | null
+  created_at: string
+  updated_at: string
+}
+
+export interface Restaurant {
+  id: string
+  name: string
+  description: string | null
+  image_url: string | null
+  cuisine_type: string
+  rating: number
+  delivery_time_min: number
+  delivery_time_max: number
+  delivery_fee: number
+  min_order: number
+  is_featured: boolean
+  is_active: boolean
+  address: string | null
+  created_at: string
+}
+
+export interface MenuItem {
+  id: string
+  restaurant_id: string
+  name: string
+  description: string | null
+  price: number
+  image_url: string | null
+  category: string
+  is_vegetarian: boolean
+  is_vegan: boolean
+  is_spicy: boolean
+  is_available: boolean
+  calories: number | null
+  created_at: string
+}
+
+export interface CartItem {
+  id: string
+  user_id: string
+  menu_item_id: string
+  quantity: number
+  special_instructions: string | null
+  created_at: string
+  // Joined data
+  menu_item?: MenuItem & { restaurant?: Restaurant }
+}
+
+export interface Order {
+  id: string
+  user_id: string
+  restaurant_id: string
+  status: OrderStatus
+  subtotal: number
+  delivery_fee: number
+  total: number
+  delivery_address: string
+  special_instructions: string | null
+  stripe_session_id: string | null
+  estimated_delivery: string | null
+  created_at: string
+  updated_at: string
+  // Joined data
+  restaurant?: Restaurant
+  order_items?: OrderItem[]
+}
+
+export interface OrderItem {
+  id: string
+  order_id: string
+  menu_item_id: string
+  quantity: number
+  unit_price: number
+  subtotal: number
+  special_instructions: string | null
+  // Joined data
+  menu_item?: MenuItem
+}
+
+export interface Favorite {
+  id: string
+  user_id: string
+  restaurant_id: string
+  created_at: string
+  // Joined data
+  restaurant?: Restaurant
+}
+
+// AI Recommendation types
+export interface FoodRecommendation {
+  menu_item: MenuItem
+  restaurant: Restaurant
+  reason: string
+  match_score: number
+}
+
+export interface ContextSignals {
+  timeOfDay: "morning" | "afternoon" | "evening" | "night"
+  dayOfWeek: string
+  mood: Mood
+  weather?: string
+}
+
+// Cart context types
+export interface CartState {
+  items: CartItem[]
+  restaurant: Restaurant | null
+  subtotal: number
+  deliveryFee: number
+  total: number
+  itemCount: number
+}
+
+// Legacy types kept for compatibility
 export type HealthGoal = "weight_loss" | "muscle_gain" | "energy" | "gut_health" | "balanced"
 export type Diet = "vegetarian" | "vegan" | "non_vegetarian" | "jain" | "keto"
-export type Mood = "energized" | "stressed" | "tired" | "happy" | "neutral"
-export type MealType = "breakfast" | "lunch" | "dinner" | "snack"
 export type Language = "en" | "hi" | "ta" | "kn" | "te"
 
 export interface User {
@@ -48,13 +170,6 @@ export interface Meal {
   meal_type: MealType
 }
 
-export interface ContextSignals {
-  timeOfDay: "morning" | "afternoon" | "evening" | "night"
-  dayOfWeek: string
-  mood: Mood
-  hoursSinceLastMeal?: number
-}
-
 export interface LeaderboardEntry {
   userId: string
   displayName: string
@@ -93,7 +208,6 @@ export interface BehaviorInsight {
   severity: "info" | "warn" | "good"
 }
 
-/* ---------- New: Quests (assigned tasks → claim XP) ---------- */
 export type QuestCategory = "nutrition" | "movement" | "hydration" | "mindfulness"
 export type QuestDifficulty = "easy" | "medium" | "hard"
 export type QuestStatus = "active" | "ready" | "claimed"
@@ -109,18 +223,15 @@ export interface Quest {
   progress: number
   target: number
   status: QuestStatus
-  /** Short verb shown on the action button (e.g. "Log meal") */
   actionLabel: string
 }
 
-/* ---------- New: Live Walking / Explore (Pokémon GO–style) ---------- */
 export type SpotKind = "produce" | "hydration" | "jog" | "cafe" | "yoga" | "market"
 
 export interface WalkSpot {
   id: string
   name: string
   kind: SpotKind
-  /** Stylized map coordinates 0–100 (percent of canvas) */
   x: number
   y: number
   distanceM: number
