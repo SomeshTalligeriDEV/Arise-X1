@@ -1,29 +1,35 @@
 import type { Metadata, Viewport } from "next"
-import { Orbitron } from "next/font/google"
-
+import { Orbitron, Inter } from "next/font/google"
 import { UserStatsProvider } from "@/lib/user-stats-context"
 import { AriaCoach } from "@/components/aria-coach"
 import { RewardToast } from "@/components/reward-toast"
 import "./globals.css"
 
-/* ── Orbitron: sci-fi / gaming headings ── */
+const inter = Inter({ subsets: ["latin"], variable: "--font-inter" })
 const orbitron = Orbitron({
   subsets: ["latin"],
   variable: "--font-orbitron",
-  weight: ["400", "500", "600", "700", "800", "900"],
+  weight: ["400", "700", "900"],
   display: "swap",
 })
 
 export const metadata: Metadata = {
-  title: "ARISE-X1 — Level Up Your Health",
-  description:
-    "ARISE-X1 is an AI-powered food & health tracker. Earn XP, track macros, battle unhealthy choices. Your behavioral health OS — gamified.",
+  title: "Arise-X1 | AI-Powered Health Gamification",
+  description: "Level up your health with Arise-X1. Track food with AI, earn XP, and compete in fitness challenges. Your behavioral health OS.",
+  keywords: ["health tracker", "AI nutrition", "fitness game", "XP fitness", "Arise-X1"],
+  authors: [{ name: "Arise-X1 Team" }],
+  openGraph: {
+    title: "Arise-X1 | Level Up Your Health",
+    description: "The world's first AI-powered health OS that feels like a game.",
+    type: "website",
+  },
 }
 
 export const viewport: Viewport = {
   themeColor: "#0f0a1e",
   width: "device-width",
   initialScale: 1,
+  maximumScale: 1,
 }
 
 export default function RootLayout({
@@ -32,23 +38,15 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" className={`dark bg-background ${orbitron.variable}`}>
-      <head>
-        {/* Press Start 2P + VT323 via Google Fonts (pixel art fonts) */}
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&family=Orbitron:wght@400;500;600;700;800;900&display=swap"
-          rel="stylesheet"
-        />
-      </head>
-      <body className="font-sans antialiased bg-background text-foreground">
+    <html lang="en" className={`dark ${inter.variable} ${orbitron.variable}`}>
+      <body className="min-h-screen bg-background font-sans text-foreground antialiased selection:bg-primary/30">
         <UserStatsProvider>
-          {children}
+          <div className="relative flex min-h-screen flex-col">
+            <main className="flex-1">{children}</main>
+          </div>
           <RewardToast />
           <AriaCoach />
         </UserStatsProvider>
-        
       </body>
     </html>
   )
