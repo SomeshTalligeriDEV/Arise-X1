@@ -2,6 +2,7 @@
 
 import Image from "next/image"
 import Link from "next/link"
+import { motion } from "framer-motion"
 import {
   ArrowLeft,
   CheckCircle,
@@ -13,6 +14,9 @@ import {
   UtensilsCrossed,
   ChefHat,
   XCircle,
+  IndianRupee,
+  Navigation,
+  Sparkles,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { BottomNav } from "@/components/bottom-nav"
@@ -90,27 +94,41 @@ export function OrdersPageClient({ orders }: OrdersPageClientProps) {
 
       <main className="mx-auto max-w-4xl px-4 py-6">
         {orders.length === 0 ? (
-          <div className="flex flex-col items-center justify-center rounded-2xl border border-border/60 bg-card/40 py-16">
-            <div className="flex size-20 items-center justify-center rounded-full bg-muted">
-              <ShoppingBag className="size-10 text-muted-foreground" />
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="flex flex-col items-center justify-center rounded-2xl border border-border/60 bg-card/40 py-16"
+          >
+            <div className="flex size-24 items-center justify-center rounded-full bg-gradient-to-br from-purple-500/20 to-pink-500/20">
+              <ShoppingBag className="size-12 text-purple-400" />
             </div>
             <h2 className="mt-4 text-xl font-bold">No orders yet</h2>
             <p className="mt-2 text-center text-sm text-muted-foreground">
               When you place an order, it will appear here
             </p>
-            <Button asChild className="mt-6">
+            <Button asChild className="mt-6 bg-gradient-to-r from-purple-600 to-pink-600">
               <Link href="/">Start Ordering</Link>
             </Button>
-          </div>
+          </motion.div>
         ) : (
           <div className="flex flex-col gap-8">
             {/* Active Orders */}
             {activeOrders.length > 0 && (
               <section>
-                <h2 className="mb-4 text-lg font-bold">Active Orders</h2>
+                <h2 className="mb-4 flex items-center gap-2 text-lg font-bold">
+                  <Sparkles className="size-5 text-purple-400" />
+                  Active Orders
+                </h2>
                 <div className="flex flex-col gap-4">
-                  {activeOrders.map((order) => (
-                    <OrderCard key={order.id} order={order} />
+                  {activeOrders.map((order, index) => (
+                    <motion.div
+                      key={order.id}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: index * 0.1 }}
+                    >
+                      <OrderCard order={order} isActive />
+                    </motion.div>
                   ))}
                 </div>
               </section>
@@ -121,8 +139,15 @@ export function OrdersPageClient({ orders }: OrdersPageClientProps) {
               <section>
                 <h2 className="mb-4 text-lg font-bold">Past Orders</h2>
                 <div className="flex flex-col gap-4">
-                  {pastOrders.map((order) => (
-                    <OrderCard key={order.id} order={order} />
+                  {pastOrders.map((order, index) => (
+                    <motion.div
+                      key={order.id}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: index * 0.1 }}
+                    >
+                      <OrderCard order={order} />
+                    </motion.div>
                   ))}
                 </div>
               </section>
@@ -136,26 +161,29 @@ export function OrdersPageClient({ orders }: OrdersPageClientProps) {
   )
 }
 
-function OrderCard({ order }: { order: Order }) {
+function OrderCard({ order, isActive }: { order: Order; isActive?: boolean }) {
   const statusConfig = STATUS_CONFIG[order.status]
   const StatusIcon = statusConfig.icon
   const orderDate = new Date(order.created_at)
-  const formattedDate = orderDate.toLocaleDateString("en-US", {
+  const formattedDate = orderDate.toLocaleDateString("en-IN", {
     month: "short",
     day: "numeric",
     year: "numeric",
   })
-  const formattedTime = orderDate.toLocaleTimeString("en-US", {
+  const formattedTime = orderDate.toLocaleTimeString("en-IN", {
     hour: "numeric",
     minute: "2-digit",
   })
 
   return (
-    <article className="rounded-2xl border border-border/60 bg-card/60 p-4 backdrop-blur">
+    <article className={cn(
+      "rounded-2xl border border-border/60 bg-card/60 p-4 backdrop-blur transition-all hover:border-purple-500/30",
+      isActive && "border-purple-500/30 bg-gradient-to-br from-purple-500/5 to-pink-500/5"
+    )}>
       {/* Header */}
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-center gap-3">
-          <div className="relative size-12 overflow-hidden rounded-lg">
+          <div className="relative size-14 overflow-hidden rounded-xl">
             {order.restaurant?.image_url ? (
               <Image
                 src={order.restaurant.image_url}
@@ -173,6 +201,9 @@ function OrderCard({ order }: { order: Order }) {
             <span className="font-semibold">{order.restaurant?.name}</span>
             <span className="text-xs text-muted-foreground">
               {formattedDate} at {formattedTime}
+            </span>
+            <span className="font-mono text-xs text-muted-foreground">
+              #{order.id.slice(0, 8).toUpperCase()}
             </span>
           </div>
         </div>
@@ -196,7 +227,10 @@ function OrderCard({ order }: { order: Order }) {
             <span className="text-muted-foreground">
               {item.quantity}x {item.menu_item?.name}
             </span>
-            <span>${item.subtotal.toFixed(2)}</span>
+            <span className="flex items-center">
+              <IndianRupee className="size-3" />
+              {item.subtotal.toFixed(0)}
+            </span>
           </div>
         ))}
         {(order.order_items?.length ?? 0) > 3 && (
@@ -208,7 +242,7 @@ function OrderCard({ order }: { order: Order }) {
 
       {/* Delivery Address */}
       <div className="mt-3 flex items-start gap-2 rounded-lg bg-secondary/30 p-2 text-xs">
-        <MapPin className="mt-0.5 size-3.5 shrink-0 text-muted-foreground" />
+        <MapPin className="mt-0.5 size-3.5 shrink-0 text-purple-400" />
         <span className="text-muted-foreground">{order.delivery_address}</span>
       </div>
 
@@ -216,26 +250,39 @@ function OrderCard({ order }: { order: Order }) {
       <div className="mt-4 flex items-center justify-between border-t border-border/60 pt-4">
         <div className="flex flex-col">
           <span className="text-xs text-muted-foreground">Total</span>
-          <span className="text-lg font-bold text-primary">
-            ${order.total.toFixed(2)}
+          <span className="flex items-center text-lg font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+            <IndianRupee className="size-4 text-purple-400" />
+            {order.total.toFixed(0)}
           </span>
         </div>
-        {order.status === "delivered" && (
-          <Button asChild variant="outline" size="sm">
-            <Link href={`/restaurant/${order.restaurant_id}`}>Reorder</Link>
-          </Button>
-        )}
-        {order.estimated_delivery && !["delivered", "cancelled"].includes(order.status) && (
-          <div className="flex items-center gap-2 text-xs text-muted-foreground">
-            <Clock className="size-3.5" />
-            Est. delivery:{" "}
-            {new Date(order.estimated_delivery).toLocaleTimeString("en-US", {
-              hour: "numeric",
-              minute: "2-digit",
-            })}
-          </div>
-        )}
+        <div className="flex gap-2">
+          {isActive && (
+            <Button asChild size="sm" className="bg-gradient-to-r from-purple-600 to-pink-600">
+              <Link href={`/orders/${order.id}`}>
+                <Navigation className="mr-1 size-4" />
+                Track Order
+              </Link>
+            </Button>
+          )}
+          {order.status === "delivered" && (
+            <Button asChild variant="outline" size="sm">
+              <Link href={`/restaurant/${order.restaurant_id}`}>Reorder</Link>
+            </Button>
+          )}
+        </div>
       </div>
+
+      {/* ETA for active orders */}
+      {order.estimated_delivery && !["delivered", "cancelled"].includes(order.status) && (
+        <div className="mt-3 flex items-center gap-2 rounded-lg bg-purple-500/10 p-2 text-xs text-purple-400">
+          <Clock className="size-3.5" />
+          Estimated delivery:{" "}
+          {new Date(order.estimated_delivery).toLocaleTimeString("en-IN", {
+            hour: "numeric",
+            minute: "2-digit",
+          })}
+        </div>
+      )}
     </article>
   )
 }

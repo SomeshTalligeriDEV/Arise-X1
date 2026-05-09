@@ -101,6 +101,111 @@ export interface Favorite {
   restaurant?: Restaurant
 }
 
+export interface Category {
+  id: string
+  name: string
+  icon: string | null
+  image_url: string | null
+  display_order: number
+  is_active: boolean
+  created_at: string
+}
+
+export interface DeliveryPartner {
+  id: string
+  user_id: string | null
+  name: string
+  phone: string
+  vehicle_type: string
+  vehicle_number: string | null
+  avatar_url: string | null
+  rating: number
+  total_deliveries: number
+  is_available: boolean
+  current_location_lat: number | null
+  current_location_lng: number | null
+  created_at: string
+}
+
+export interface Address {
+  id: string
+  user_id: string
+  label: string
+  address_line1: string
+  address_line2: string | null
+  city: string
+  state: string
+  pincode: string
+  latitude: number | null
+  longitude: number | null
+  is_default: boolean
+  created_at: string
+}
+
+export interface Payment {
+  id: string
+  order_id: string | null
+  user_id: string
+  amount: number
+  payment_method: string
+  transaction_id: string | null
+  status: "pending" | "processing" | "completed" | "failed"
+  qr_code_data: string | null
+  paid_at: string | null
+  created_at: string
+}
+
+export interface Review {
+  id: string
+  user_id: string
+  restaurant_id: string | null
+  order_id: string | null
+  rating: number
+  comment: string | null
+  food_rating: number | null
+  delivery_rating: number | null
+  created_at: string
+  // Joined data
+  profile?: Profile
+}
+
+export interface Notification {
+  id: string
+  user_id: string
+  title: string
+  message: string
+  type: string
+  is_read: boolean
+  data: Record<string, unknown> | null
+  created_at: string
+}
+
+export interface Coupon {
+  id: string
+  code: string
+  description: string | null
+  discount_type: "percentage" | "fixed"
+  discount_value: number
+  min_order_value: number
+  max_discount: number | null
+  valid_from: string
+  valid_until: string | null
+  usage_limit: number | null
+  used_count: number
+  is_active: boolean
+  created_at: string
+}
+
+export type DeliveryStatus = 
+  | "pending"
+  | "confirmed" 
+  | "cooking"
+  | "food_ready"
+  | "picked_up"
+  | "on_the_way"
+  | "near_location"
+  | "delivered"
+
 // AI Recommendation types
 export interface FoodRecommendation {
   menu_item: MenuItem

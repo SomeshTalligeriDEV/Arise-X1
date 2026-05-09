@@ -15,6 +15,7 @@ import {
   Star,
   Bike,
   UtensilsCrossed,
+  IndianRupee,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { BottomNav } from "@/components/bottom-nav"
@@ -110,9 +111,10 @@ export function RestaurantDetailClient({ restaurant, menuItems, user }: Restaura
                   <Clock className="size-4" />
                   {restaurant.delivery_time_min}-{restaurant.delivery_time_max} min
                 </span>
-                <span className="flex items-center gap-1">
+                <span className="flex items-center gap-0.5">
                   <Bike className="size-4" />
-                  ${restaurant.delivery_fee.toFixed(2)} delivery
+                  <IndianRupee className="size-3" />
+                  {restaurant.delivery_fee.toFixed(0)} delivery
                 </span>
               </div>
             </div>
@@ -120,8 +122,8 @@ export function RestaurantDetailClient({ restaurant, menuItems, user }: Restaura
           {restaurant.description && (
             <p className="mt-3 text-sm text-muted-foreground">{restaurant.description}</p>
           )}
-          <p className="mt-2 text-xs text-muted-foreground">
-            Minimum order: ${restaurant.min_order.toFixed(2)}
+          <p className="mt-2 flex items-center gap-0.5 text-xs text-muted-foreground">
+            Minimum order: <IndianRupee className="size-3" />{restaurant.min_order.toFixed(0)}
           </p>
         </div>
       </div>
@@ -196,7 +198,9 @@ function MenuItemCard({ item, quantityInCart, onAddToCart, isAdding, isLoading, 
       <div className="flex flex-1 flex-col gap-1">
         <div className="flex items-start justify-between gap-2">
           <h3 className="font-semibold leading-tight">{item.name}</h3>
-          <span className="shrink-0 font-bold text-primary">${item.price.toFixed(2)}</span>
+          <span className="shrink-0 flex items-center font-bold text-primary">
+            <IndianRupee className="size-3.5" />{item.price.toFixed(0)}
+          </span>
         </div>
         
         {item.description && (
