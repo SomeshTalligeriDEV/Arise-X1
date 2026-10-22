@@ -1,28 +1,21 @@
 "use client"
 
 /**
- * ARIA Coach — floating glass chat widget that lives globally.
- *
- * Uses dummy rule-based replies so the demo works with no API keys,
- * but pulls live numbers (XP, rank, streak, hydration, steps) from
- * UserStatsContext so its answers feel real and current.
- *
- * Architecture seam: the `generateAriaReply` function below is the
- * single place to swap in a real AI SDK call later.
+ * ARIA Food Concierge — AI-powered food recommendation assistant
+ * Helps users decide what to order based on mood, time, and preferences
  */
 
-import { useEffect, useMemo, useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import {
-  ArrowUp,
   Bot,
   Loader2,
   MessageCircle,
   Send,
   Sparkles,
   X,
+  UtensilsCrossed,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { useUserStats } from "@/lib/user-stats-context"
 import { cn } from "@/lib/utils"
 
 interface ChatMessage {
@@ -33,11 +26,11 @@ interface ChatMessage {
 }
 
 const SUGGESTIONS = [
-  "What should I eat right now?",
-  "How do I climb the leaderboard?",
-  "Plan my week",
-  "How's my streak?",
-  "Tips for low-energy days",
+  "What should I order right now?",
+  "I'm feeling adventurous",
+  "Something quick and healthy",
+  "Best rated dishes nearby",
+  "Comfort food for tonight",
 ] as const
 
 function uid() {
@@ -45,7 +38,6 @@ function uid() {
 }
 
 export function AriaCoach() {
-  const stats = useUserStats()
   const [open, setOpen] = useState(false)
   const [pending, setPending] = useState(false)
   const [draft, setDraft] = useState("")
@@ -54,27 +46,11 @@ export function AriaCoach() {
       id: uid(),
       role: "assistant",
       ts: Date.now(),
-      text: `Hi, I'm ARIA — your nutrition coach. You're at ${stats.xp.toLocaleString()} XP, rank #${stats.rank.rank}, with a ${stats.streak}-day streak. Ask me anything, or pick a suggestion below.`,
+      text: `Hey there! I'm ARIA, your AI food concierge. I can help you discover the perfect meal based on your mood, cravings, or dietary needs. What are you in the mood for?`,
     },
   ])
   const scrollerRef = useRef<HTMLDivElement | null>(null)
   const inputRef = useRef<HTMLInputElement | null>(null)
-
-  // Live snapshot for replies + greeting refresh when panel opens
-  const live = useMemo(
-    () => ({
-      xp: stats.xp,
-      rank: stats.rank.rank,
-      total: stats.rank.total,
-      ahead: stats.rank.ahead?.displayName ?? null,
-      streak: stats.streak,
-      steps: stats.steps,
-      hydration: stats.hydrationGlasses,
-      meals: stats.mealsLogged,
-      level: stats.level,
-    }),
-    [stats],
-  )
 
   // Auto-scroll to bottom on new messages
   useEffect(() => {
@@ -105,7 +81,7 @@ export function AriaCoach() {
 
     // Simulated streaming round-trip
     window.setTimeout(() => {
-      const reply = generateAriaReply(trimmed, live)
+      const reply = generateAriaReply(trimmed)
       setMessages((m) => [
         ...m,
         { id: uid(), role: "assistant", text: reply, ts: Date.now() },
@@ -119,7 +95,7 @@ export function AriaCoach() {
       {/* Floating action button */}
       <button
         type="button"
-        aria-label={open ? "Close ARIA coach" : "Open ARIA coach"}
+        aria-label={open ? "Close ARIA concierge" : "Open ARIA concierge"}
         aria-expanded={open}
         onClick={() => setOpen((v) => !v)}
         className={cn(
@@ -150,9 +126,7 @@ export function AriaCoach() {
           className={cn(
             "fixed z-[59] flex flex-col overflow-hidden rounded-3xl border border-border/60 shadow-2xl",
             "glass-strong",
-            // Mobile: nearly full-width, anchored bottom-right above bottom nav.
             "right-3 bottom-40 left-3 max-h-[70vh]",
-            // Desktop: pinned to right side as a 380×560 panel.
             "md:left-auto md:bottom-24 md:right-6 md:w-[380px] md:max-h-[560px]",
           )}
         >
@@ -162,13 +136,13 @@ export function AriaCoach() {
               aria-hidden="true"
               className="relative flex size-9 items-center justify-center rounded-xl bg-primary/20 text-primary ring-1 ring-primary/40"
             >
-              <Bot className="size-5" />
+              <UtensilsCrossed className="size-5" />
               <span className="absolute -right-0.5 -bottom-0.5 size-2.5 rounded-full bg-primary ring-2 ring-card animate-pulse" />
             </span>
             <div className="flex flex-1 flex-col leading-tight">
               <span className="text-sm font-bold">ARIA</span>
               <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
-                Your AI coach · online
+                Food Concierge · online
               </span>
             </div>
             <button
@@ -212,7 +186,7 @@ export function AriaCoach() {
               {pending && (
                 <li className="mr-auto flex items-center gap-2 rounded-2xl border border-border/60 bg-card/70 px-3 py-2 text-xs text-muted-foreground">
                   <Loader2 className="size-3.5 animate-spin" aria-hidden="true" />
-                  ARIA is thinking…
+                  ARIA is thinking...
                 </li>
               )}
             </ul>
@@ -248,7 +222,7 @@ export function AriaCoach() {
               onChange={(e) => setDraft(e.target.value)}
               type="text"
               autoComplete="off"
-              placeholder="Ask ARIA about meals, streaks, or your rank…"
+              placeholder="What are you craving?"
               aria-label="Message ARIA"
               className="flex-1 rounded-full border border-border/60 bg-secondary/50 px-4 py-2 text-sm outline-none placeholder:text-muted-foreground focus:border-primary/50"
             />
@@ -271,10 +245,10 @@ export function AriaCoach() {
           <div className="flex items-center justify-between border-t border-border/60 px-4 py-2">
             <span className="inline-flex items-center gap-1 font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
               <MessageCircle className="size-3" aria-hidden="true" />
-              Demo · dummy data
+              AI Food Recommendations
             </span>
             <span className="font-mono text-[10px] text-muted-foreground">
-              Rank #{live.rank} · {live.xp.toLocaleString()} XP
+              Powered by ARISE
             </span>
           </div>
         </div>
@@ -284,79 +258,76 @@ export function AriaCoach() {
 }
 
 /* -------------------------------------------------------------- */
-/*  Dummy reply engine                                            */
+/*  Food recommendation reply engine                               */
 /* -------------------------------------------------------------- */
 
-interface LiveSnapshot {
-  xp: number
-  rank: number
-  total: number
-  ahead: string | null
-  streak: number
-  steps: number
-  hydration: number
-  meals: number
-  level: number
-}
-
-function generateAriaReply(input: string, live: LiveSnapshot): string {
+function generateAriaReply(input: string): string {
   const q = input.toLowerCase()
 
-  // Rank / leaderboard
-  if (/(rank|leaderboard|position|climb)/.test(q)) {
-    const aheadLine = live.ahead
-      ? ` Next target: pass ${live.ahead} above you.`
-      : " You're at the top — defend your spot."
-    return `You're currently #${live.rank} of ${live.total} with ${live.xp.toLocaleString()} XP.${aheadLine} Claim today's quests on the Quests page — each one bumps you up by 25–120 XP.`
+  // Quick / fast food
+  if (/(quick|fast|hurry|rush|busy)/.test(q)) {
+    return `For something quick, I'd recommend Taco Fiesta's Carne Asada Tacos — they deliver in 20-30 minutes and are absolutely delicious. Or try Dragon Palace's Spring Rolls as a fast appetizer while you decide on more.`
   }
 
-  // Streak
-  if (/(streak|consistency|days)/.test(q)) {
-    return `${live.streak}-day streak — top 8% for consistency this month. Don't break it tonight: a logged dinner is enough to keep it alive.`
+  // Healthy options
+  if (/(healthy|diet|light|salad|vegan|vegetarian|green|clean)/.test(q)) {
+    return `The Green Bowl has amazing healthy options! Their Buddha Bowl is packed with quinoa and roasted veggies, only 420 calories. For something heartier, try Spice Garden's Paneer Tikka Masala — it's vegetarian and absolutely flavorful.`
   }
 
-  // Hydration / water
-  if (/(water|hydrat|drink|glass)/.test(q)) {
-    const remaining = Math.max(0, 8 - live.hydration)
-    return `You've had ${live.hydration} of 8 glasses today. ${remaining > 0 ? `Down ${remaining} more before 9pm — your 3pm focus window will thank you.` : "Hydration goal hit — nice work."}`
+  // Comfort food
+  if (/(comfort|cozy|warm|soul|home|nostalgic)/.test(q)) {
+    return `Nothing beats comfort food! I'd suggest Mama Mia's Margherita Pizza with extra garlic bread, or if you're feeling spicy, Spice Garden's Butter Chicken with garlic naan is pure comfort in a bowl.`
   }
 
-  // Steps / walking
-  if (/(step|walk|move|cardio|run)/.test(q)) {
-    const remaining = Math.max(0, 8000 - live.steps)
-    return `${live.steps.toLocaleString()} steps so far. ${remaining > 0 ? `${remaining.toLocaleString()} to your daily goal — open Explore to find pickups within 600m.` : "Daily goal cleared. Bonus XP unlocked."}`
+  // Adventurous / new
+  if (/(adventur|new|different|try|explore|surprise)/.test(q)) {
+    return `Feeling adventurous? Seoul Kitchen's Korean BBQ is incredible — get the bibimbap with a side of kimchi. Or go for Sakura Sushi's Dragon Roll if you haven't tried Japanese fusion before!`
   }
 
-  // Stress / low energy / tired
-  if (/(stress|tired|low|energy|sleep|sad|anxious)/.test(q)) {
-    return `For a low-energy evening I'd queue moong dal khichdi (calming, low-glycemic, ~380 kcal) and a 5-minute breathing quest. That combo earns you +85 XP.`
+  // Pizza / Italian
+  if (/(pizza|italian|pasta|cheese)/.test(q)) {
+    return `Mama Mia Pizzeria is your best bet! Their Margherita uses San Marzano tomatoes and fresh mozzarella — authentic Neapolitan style. Don't skip the Tiramisu for dessert.`
   }
 
-  // Plan / week
-  if (/(plan|week|schedule|prep)/.test(q)) {
-    return `Try a 3-day rolling plan: oats + paneer-quinoa bowl + idli-sambar. It hits 25g+ protein at every lunch and stays vegetarian. Tap "View meal plans" on the home page to see the full month.`
+  // Sushi / Japanese
+  if (/(sushi|japanese|asian|fish|roll)/.test(q)) {
+    return `Sakura Sushi House is rated 4.8 stars! The Dragon Roll with shrimp tempura is their signature dish. Start with their Miso Soup and Veggie Tempura for a complete experience.`
   }
 
-  // Eat / meal / breakfast / lunch / dinner / recommend
-  if (/(eat|meal|breakfast|lunch|dinner|snack|food|recommend|hungry)/.test(q)) {
-    return `Right now I'd suggest a paneer & quinoa power bowl — 28g protein, ready in 18 min, and it directly closes your Tuesday protein gap. Open Recommend to log it for +45 XP.`
+  // Indian / spicy
+  if (/(indian|curry|spic|masala|naan)/.test(q)) {
+    return `Spice Garden has the best Indian food in town! Their Butter Chicken is creamy perfection, and the Garlic Naan is made fresh. If you can handle heat, the Paneer Tikka Masala is amazing.`
   }
 
-  // Calories / protein / macros
-  if (/(calor|protein|macro|carb|fat|fiber)/.test(q)) {
-    return `Aim for ~25g protein per main meal. You're averaging 18g at lunch this week — closing that gap once a day is the single fastest move for your goal.`
+  // Mexican
+  if (/(mexican|taco|burrito|salsa|guac)/.test(q)) {
+    return `Taco Fiesta is calling your name! Their Carne Asada Tacos are legendary, and you MUST get the fresh Guacamole & Chips. Finish with Churros — crispy, cinnamon-sugar heaven.`
   }
 
-  // Quest / xp / reward / coin
-  if (/(quest|xp|coin|reward|points)/.test(q)) {
-    return `Two quests are ready to claim and worth +145 XP combined. Claiming both lifts you ~2 spots on the leaderboard. Head to the Quests page.`
+  // Best rated / top picks
+  if (/(best|top|rated|popular|recommend)/.test(q)) {
+    return `Based on ratings, here are today's top picks: Sakura Sushi (4.8 stars) for their Dragon Roll, The Green Bowl (4.9 stars) for the Buddha Bowl, and Spice Garden (4.7 stars) for Butter Chicken. All deliver in under 45 minutes!`
+  }
+
+  // What to eat / general recommendation
+  if (/(eat|order|meal|dinner|lunch|breakfast|hungry|craving|food|tonight)/.test(q)) {
+    const hour = new Date().getHours()
+    if (hour < 11) {
+      return `Good morning! For breakfast, The Green Bowl's Acai Power Bowl is energizing and delicious. Or if you want something savory, Dragon Palace's Vegetable Fried Rice is surprisingly good in the morning!`
+    } else if (hour < 15) {
+      return `For lunch, I'd suggest The Green Bowl's Buddha Bowl for something light, or if you're really hungry, Mama Mia's Pepperoni Pizza will hit the spot. Both deliver in under 35 minutes!`
+    } else if (hour < 20) {
+      return `For dinner tonight, you can't go wrong with Spice Garden's Butter Chicken and Garlic Naan combo. Or if you want something different, Sakura Sushi's Dragon Roll is absolutely incredible.`
+    } else {
+      return `Late night craving? Taco Fiesta delivers until midnight — their Chicken Burrito is filling and satisfying. Or grab some Churros for a sweet treat!`
+    }
   }
 
   // Greeting / small talk
-  if (/^(hi|hello|hey|namaste|yo)\b/.test(q)) {
-    return `Hey — good to see you. You're at level ${live.level}, rank #${live.rank}. What can I help you do today: meal, plan, or quest?`
+  if (/^(hi|hello|hey|yo)\b/.test(q)) {
+    return `Hey! Ready to discover your next favorite meal. Tell me what you're in the mood for — something healthy, comfort food, or maybe something adventurous?`
   }
 
   // Fallback
-  return `I'd lean toward keeping it simple: log your next meal, tick one quest, and walk to one nearby pickup. That's roughly +110 XP — usually enough to climb a spot on the board.`
+  return `Based on what's popular right now, I'd recommend checking out The Green Bowl for healthy options, Sakura Sushi for Japanese, or Spice Garden for Indian cuisine. What cuisine sounds good to you?`
 }

@@ -1,8 +1,7 @@
 import type { Metadata, Viewport } from "next"
 import { Orbitron, Inter } from "next/font/google"
-import { UserStatsProvider } from "@/lib/user-stats-context"
+import { CartProvider } from "@/lib/cart-context"
 import { AriaCoach } from "@/components/aria-coach"
-import { RewardToast } from "@/components/reward-toast"
 import "./globals.css"
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" })
@@ -14,13 +13,13 @@ const orbitron = Orbitron({
 })
 
 export const metadata: Metadata = {
-  title: "Arise-X1 | AI-Powered Health Gamification",
-  description: "Level up your health with Arise-X1. Track food with AI, earn XP, and compete in fitness challenges. Your behavioral health OS.",
-  keywords: ["health tracker", "AI nutrition", "fitness game", "XP fitness", "Arise-X1"],
-  authors: [{ name: "Arise-X1 Team" }],
+  title: "ARISE Eats | AI-Powered Food Delivery",
+  description: "Order delicious food with AI-powered recommendations. Get personalized suggestions based on your mood, time, and cravings.",
+  keywords: ["food delivery", "AI recommendations", "restaurant delivery", "ARISE Eats"],
+  authors: [{ name: "ARISE Eats Team" }],
   openGraph: {
-    title: "Arise-X1 | Level Up Your Health",
-    description: "The world's first AI-powered health OS that feels like a game.",
+    title: "ARISE Eats | AI-Powered Food Delivery",
+    description: "The smartest way to satisfy your cravings. AI-powered food recommendations delivered to your door.",
     type: "website",
   },
 }
@@ -38,15 +37,14 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" className={`dark ${inter.variable} ${orbitron.variable}`}>
+    <html lang="en" className={`dark bg-background ${inter.variable} ${orbitron.variable}`}>
       <body className="min-h-screen bg-background font-sans text-foreground antialiased selection:bg-primary/30">
-        <UserStatsProvider>
+        <CartProvider>
           <div className="relative flex min-h-screen flex-col">
             <main className="flex-1">{children}</main>
           </div>
-          <RewardToast />
           <AriaCoach />
-        </UserStatsProvider>
+        </CartProvider>
       </body>
     </html>
   )
